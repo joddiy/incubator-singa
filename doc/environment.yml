@@ -1,8 +1,5 @@
-name: singa
+name: singa-dev
 channels:
-  - shicong
-  - defaults
   - conda-forge
 dependencies:
-  - python=3.7.7=hcf32534_0_cpython
-
+  - pip

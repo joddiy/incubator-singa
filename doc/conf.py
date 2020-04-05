@@ -142,7 +142,7 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
-autodoc_mock_imports = []
+autodoc_mock_imports = ['onnx']
 
 # -- Options for HTML output ----------------------------------------------
 

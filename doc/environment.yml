@@ -3,3 +3,4 @@ channels:
   - shicong
 dependencies:
   - singa==3.0.0.rc0=cpu_py37
+  - onnx=1.6.0

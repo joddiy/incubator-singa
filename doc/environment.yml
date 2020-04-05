@@ -1,5 +1,7 @@
 name: test
 channels:
   - shicong
+  - anaconda
 dependencies:
   - singa=3.0.0.rc0=cpu_py37 [--no-deps]
+  - python_abi=3.7=1_cp37m

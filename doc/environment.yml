@@ -1,6 +1,7 @@
 name: singa-cpu
 channels:
   - shicong
+  - conda-forge
 dependencies:
   - singa==3.0.0.rc0=cpu_py37
   - onnx=1.6.0=py37he1b5a44_0

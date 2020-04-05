@@ -3,3 +3,5 @@ channels:
   - shicong
 dependencies:
   - singa-cpu=3.0.0.rc0=py37
+  - numpy=1.16.6=py37hbc911f0_0
+  - numpy-base=1.16.6=py37hde5b4d6_0

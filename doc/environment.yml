@@ -1,6 +1,7 @@
 name: singa-cpu
 channels:
   - shicong
+  - defaults
 dependencies:
   - singa-cpu=3.0.0.rc0=py37
   - singa=3.0.0.rc0=cpu_py37

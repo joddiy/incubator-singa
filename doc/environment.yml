@@ -4,14 +4,5 @@ channels:
   - defaults
   - conda-forge
 dependencies:
-  - onnx=1.6.0=py37he1b5a44_0
-  - deprecated=1.2.7=py_0
-  - glog=0.3.5=hf484d3e_1
-  - libprotobuf=3.9.2=hd408876_0
-  - numpy=1.16.6=py37hbc911f0_0
-  - numpy-base=1.16.6=py37hde5b4d6_0
-  - protobuf=3.9.2=py37he6710b0_0
   - python=3.7.7=hcf32534_0_cpython
-  - singa=3.0.0.rc0=cpu_py37
-  - singa-cpu=3.0.0.rc0=py37
 

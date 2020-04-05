@@ -1,5 +1,5 @@
-name: singa-dev
+name: singa-cpu
 channels:
-  - conda-forge
+  - shicong
 dependencies:
-  - onnx
+  - singa-cpu=3.0.0.rc0=py37

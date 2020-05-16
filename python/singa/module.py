@@ -50,10 +50,11 @@ class Graph(type):
                         # for fname in self._results:
                         #     self._results[fname].creator = None
                         for fname in self._results:
-                            if not isinstance(self._results[fname], list):
-                                self._results[fname] = [self._results[fname]]
-                            for _matrix in self._results[fname]:
-                                _matrix.creator = None
+                            if isinstance(self._results[fname], list):
+                                for _matrix in self._results[fname]:
+                                    _matrix.creator = None
+                            else:
+                                self._results[fname].creator = None
                         # make sure all Operations are deallocated
                         gc.collect()
                     # add result tensor

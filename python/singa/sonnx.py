@@ -1940,7 +1940,7 @@ class SingaBackend(Backend):
     @classmethod
     def prepare(cls, model, device, **kwargs):
         """
-        get the batch norm operator from onnx node
+        get operator from onnx node
         Args:
             model: a given onnx node
         Args:
@@ -2084,24 +2084,25 @@ class SingaRep(BackendRep):
             return [ret_outputs[outp] for outp in final_outputs]
 
 
-class BaseModel(module.Module):
-
-    def __init__(self, sg_ir, loss, optimizer):
+class SONNXModel(module.Module):
+    def __init__(self, onnx_model):
         """
         Init a SIGNA Module
         Args:
-            sg_ir: a SingaRep class
+            onnx_model: a loaded onnx model
         """
-        super(BaseModel, self).__init__()
-        self.optimizer = optimizer
-        self.ls = loss
-        self.g = sg_ir.model.graph
-        self.tm = sg_ir.tensor_map
-        self.oq = sg_ir.singa_ops
-        self.input_shape = self.g.input[0].type.tensor_type.shape.dim
-        self.dimension = len(self.input_shape)
+        super(SONNXModel, self).__init__()
+        singa_rep = SingaBackend.prepare(onnx_model)
+        # for layer_name, layer in singa_rep.layers:
+        #     self.__dict__[layer_name] = layer
+        # # store weights here as numpy
+        # for weith_name, weight in singa_rep.weights:
+        #     self.weights[weith_name] = weight
+        # # store layer info such as input and output name(only weights)
+        # for layer_name, layer_info in singa_rep.layer_infos:
+        #     self.layer_infos[layer_name] = layer_info
 
-    def forward(self, *x):
+    def forward(self, x, output={}):
         """
         The forward of the SINGA model
         Args:
@@ -2125,25 +2126,15 @@ class BaseModel(module.Module):
                 self.tm[key] = val
         return [self.tm[outp] for outp in final_outputs]
 
-    def loss(self, out, ty):
-        return self.ls(out, ty)
-
-    def optim(self, loss, dist_option, spars):
-        if dist_option == 'fp32':
-            self.optimizer.backward_and_update(loss)
-        elif dist_option == 'fp16':
-            self.optimizer.backward_and_update_half(loss)
-        elif dist_option == 'partialUpdate':
-            self.optimizer.backward_and_partial_update(loss)
-        elif dist_option == 'sparseTopK':
-            self.optimizer.backward_and_sparse_update(loss,
-                                                      topK=True,
-                                                      spars=spars)
-        elif dist_option == 'sparseThreshold':
-            self.optimizer.backward_and_sparse_update(loss,
-                                                      topK=False,
-                                                      spars=spars)
-
+    def compile(self, inputs, is_train, use_graph, graph_alg)
+        # # init weights
+        # super.compile(self, inputs, is_train, use_graph, graph_alg)
+        # # set weights' value
+        # for layer_name, layer in self.__dict__:
+        #     input_info, output_info = self.layer_infos[layer_name]
+        #     for input_name in input_info:
+        #         layer.set_weight(self.weights[input_name])   ** remember to release self.weights to free memory.
+        pass
 
 def create_model(sg_ir, loss, optimizer):
     """

@@ -24,6 +24,7 @@ from singa import opt
 from singa import device
 from singa import tensor
 from singa import sonnx
+from singa import autograd
 import numpy as np
 import time
 import argparse
@@ -138,7 +139,7 @@ def run(global_rank,
     onnx_model = onnx.load(os.path.join('/tmp', model_config['path']))
     onnx_model = update_batch_size(onnx_model, batch_size)
     sg_ir = sonnx.prepare(onnx_model, device=dev)
-    model = sonnx.create_model(sg_ir, softmax_loss, sgd)
+    model = sonnx.create_model(sg_ir, autograd.softmax_cross_entropy, sgd)
     model.input_size = model.input_shape[2].dim_value
 
 

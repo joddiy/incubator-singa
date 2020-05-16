@@ -47,6 +47,8 @@ class Graph(type):
                     self._device.EnableGraph(False)
                     # deconstruct Operations before running the entire graph
                     if name == 'optim':
+                        # for fname in self._results:
+                        #     self._results[fname].creator = None
                         for fname in self._results:
                             if not isinstance(self._results[fname], list):
                                 self._results[fname] = [self._results[fname]]

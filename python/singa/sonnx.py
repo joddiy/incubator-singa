@@ -990,7 +990,9 @@ class OnnxAttributes(dict):
 class SingaBackend(Backend):
 
     # This number indicates the onnx operator set version
-    _known_opset_version = 11
+    _opset_version = 11
+
+    _ir_version = 0x0000000000000006;
 
     # beceuase singa's operators are different from onnx.
     # we define a dict for the name projection
@@ -1108,9 +1110,7 @@ class SingaBackend(Backend):
         parse onnx constatn node to weights
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
         Returns: 
             forward, the autograd of singa operator
@@ -1131,9 +1131,7 @@ class SingaBackend(Backend):
         get the OneHot operator from onnx node
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
         Returns: 
             forward, the autograd of singa operator
@@ -1154,9 +1152,7 @@ class SingaBackend(Backend):
         get the Cast operator from onnx node
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
 
         Returns: 
@@ -1187,9 +1183,7 @@ class SingaBackend(Backend):
         get the Tile operator from onnx node
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
 
         Returns: 
@@ -1209,9 +1203,7 @@ class SingaBackend(Backend):
         get the Gather operator from onnx node
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
         Returns: 
             forward, the autograd of singa operator
@@ -1231,9 +1223,7 @@ class SingaBackend(Backend):
         get the Split operator from onnx node
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
         Returns: 
             forward, the autograd of singa operator
@@ -1251,9 +1241,7 @@ class SingaBackend(Backend):
         get the Slice operator from onnx node
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
         Returns: 
             forward, the autograd of singa operator
@@ -1280,9 +1268,7 @@ class SingaBackend(Backend):
         get the Squeeze and Unsqueeze operator from onnx node
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
         Returns: 
             forward, the autograd of singa operator
@@ -1298,9 +1284,7 @@ class SingaBackend(Backend):
         get the GlobalAveragePool operator from onnx node
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
         Returns: 
             forward, the autograd of singa operator
@@ -1316,9 +1300,7 @@ class SingaBackend(Backend):
         get the LeakyRelu operator from onnx node
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
         Returns: 
             forward, the autograd of singa operator
@@ -1334,9 +1316,7 @@ class SingaBackend(Backend):
         get the ReduceSum, ReduceMean, ReduceMax, ReduceMin, etc, operator from onnx node
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
         Returns: 
             forward, the autograd of singa operator
@@ -1353,9 +1333,7 @@ class SingaBackend(Backend):
         get the Dropout operator from onnx node
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
         Returns: 
             forward, the autograd of singa operator
@@ -1371,9 +1349,7 @@ class SingaBackend(Backend):
         get the ConstantOfShape operator from onnx node
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
         Returns: 
             forward, the autograd of singa operator
@@ -1391,9 +1367,7 @@ class SingaBackend(Backend):
         get the Transpose operator from onnx node
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
         Returns: 
             forward, the autograd of singa operator
@@ -1410,9 +1384,7 @@ class SingaBackend(Backend):
         get the clip operator from onnx node
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
         Returns: 
             forward, the autograd of singa operator
@@ -1437,9 +1409,7 @@ class SingaBackend(Backend):
         get the HardSigmoid operator from onnx node
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
         Returns: 
             forward, the autograd of singa operator
@@ -1456,9 +1426,7 @@ class SingaBackend(Backend):
         get the elu operator from onnx node
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
         Returns: 
             forward, the autograd of singa operator
@@ -1474,9 +1442,7 @@ class SingaBackend(Backend):
         get the selu operator from onnx node
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
         Returns: 
             forward, the autograd of singa operator
@@ -1493,13 +1459,10 @@ class SingaBackend(Backend):
         get the reshape operator from onnx node
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
         Returns: 
             the handle of singa operator
-        Returns: 
             the autograd of singa operator
         """
         shape = tensor.to_numpy(inputs.pop(1)).astype(np.int32).tolist()
@@ -1514,9 +1477,7 @@ class SingaBackend(Backend):
         get the conv operator from onnx node
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
         Returns: 
             forward, the autograd of singa operator
@@ -1574,9 +1535,7 @@ class SingaBackend(Backend):
         get the max or avg pool operator from onnx node
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
         Returns: 
             forward, the autograd of singa operator
@@ -1620,10 +1579,12 @@ class SingaBackend(Backend):
     def _create_batchnorm(cls, onnx_node, inputs, opset_version):
         """
         get the batch norm operator from onnx node
-        Args:onnx_node: a given onnx node
-        Args:inputs: the input tensor
-        Args:opset_version: the opset version
-        Returns: the autograd of singa operator
+        Args:
+            onnx_node: a given onnx node
+            inputs: the input tensor
+            opset_version: the opset version
+        Returns: 
+            the autograd of singa operator
         """
         x = inputs[0]
         factor = onnx_node.getattr('momentum', 0.9)
@@ -1648,9 +1609,7 @@ class SingaBackend(Backend):
         get the concat operator from onnx node
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
         Returns: 
             the autograd of singa operator
@@ -1669,9 +1628,7 @@ class SingaBackend(Backend):
         get the concat operator from onnx node
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
         Returns: 
             the autograd of singa operator
@@ -1690,9 +1647,7 @@ class SingaBackend(Backend):
         get the gemm operator from onnx node
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
         Returns: 
             the autograd of singa operator
@@ -1712,9 +1667,7 @@ class SingaBackend(Backend):
         get the flatten operator from onnx node
         Args:
             onnx_node: a given onnx node
-        Args:
             inputs: the input tensor
-        Args:
             opset_version: the opset version
         Returns: 
             the autograd of singa operator
@@ -1729,45 +1682,36 @@ class SingaBackend(Backend):
         return forward(axis=factor)
 
     @classmethod
-    def _common_onnx_node_to_singa_op(cls, onnx_node, inputs, opset_version):
+    def _common_onnx_node_to_singa_op(cls, onnx_node, inputs, opset_version=_opset_version):
         """
         get a common singa operator(only autograd) from a onnx node
         other special operators also can call this func to get autograd
         Args:
             onnx_node: a given onnx node
-        Args:
-            tensor_map: the input tensor
-        Args:
+            inputs: the input list
             opset_version: the opset version
         Returns: 
             a dict of tensors
+            a list of SingaOps('name', 'op', 'forward')
+        """
+        autograd_op = getattr(autograd, cls._rename_operators[onnx_node.op_type])
+        return autograd_op
+
+    @classmethod
+    def _onnx_node_to_singa_op(cls, onnx_node, inputs, opset_version=_opset_version):
+        """
+        get a singa operator from a onnx node
+        Args:
+            onnx_node: a given onnx node
+            inputs: the input list
+            opset_version: the opset version
         Returns: 
+            a dict of tensors
             a list of SingaOps('name', 'op', 'forward')
         """
         onnx_op_type = onnx_node.op_type
         assert onnx_op_type in cls._rename_operators, "not support operator: {}".format(
             onnx_op_type)
-        autograd_op = getattr(autograd, cls._rename_operators[onnx_op_type])
-        return autograd_op
-
-    @classmethod
-    def _onnx_node_to_singa_op(cls,
-                               onnx_node,
-                               inputs,
-                               opset_version=_known_opset_version):
-        """
-        get a singa operator from a onnx node
-        Args:
-            onnx_node: a given onnx node
-        Args:
-            inputs: the input list
-        Args:
-            opset_version: the opset version
-        Returns: 
-            a dict of tensors
-        Returns: 
-            a list of SingaOps('name', 'op', 'forward')
-        """
         if onnx_node.op_type in cls._special_operators:
             translator = getattr(cls, cls._special_operators[onnx_node.op_type])
         else:
@@ -1775,19 +1719,16 @@ class SingaBackend(Backend):
         return translator(onnx_node, inputs, opset_version)
 
     @classmethod
-    def run_node(cls, onnx_node, inputs, opset_version=_known_opset_version):
+    def run_node(cls, onnx_node, inputs, device='CPU', opset_version=_opset_version):
         """
         run a single singa operator from a onnx node
         Args:
-            onnx_node: a given onnx node
-        Args:
-            inputs: the input tensor
-        Args:
-            device: the used device
-        Args:
-            opset_version: the opset version
+            onnx_node (Node): a given onnx node
+            inputs (ndarray[]): a list of numpy ndarray
+            device (string): # CPU or GPU
+            opset_version (int): the opset version
         Returns: 
-            list, the output of the 
+            list, the output
         """
         valid_inputs = [x for x in onnx_node.inputs if x != ""]
         assert len(valid_inputs) == len(
@@ -1808,21 +1749,17 @@ class SingaBackend(Backend):
         return cls._run_node(onnx_node, tmp_inputs, forward, opset_version)
 
     @classmethod
-    def _run_node(cls,
-                  onnx_node,
-                  inputs,
-                  forward,
-                  opset_version=_known_opset_version):
+    def _run_node(cls, onnx_node, inputs, forward, device='CPU', opset_version=_opset_version):
         """
-        run a single singa operator from a onnx node
-        Args:inputs: 
-            the input tensor
-        Args:forward: 
-            the forward of singa operator
+        run a single singa operator from a singa layer
         Args:
-            opset_version: the opset version
+            onnx_node (Node): a given onnx node
+            inputs (ndarray[]): a list of numpy ndarray
+            forward (Layer.forward): the layer's forward function
+            device (string): # CPU or GPU
+            opset_version (int): the opset version
         Returns: 
-            list, the output of the
+            list, the output
         """
         outputs = forward(*inputs)
         if not isinstance(outputs, collections.Iterable):
@@ -1833,174 +1770,99 @@ class SingaBackend(Backend):
         return outputs_dict
 
     @classmethod
-    def _init_graph_parameter(cls, graph, init_inputs, device):
+    def _parse_graph_params(cls, graph, device):
         """
-        init the singa tensor from onnx infos
+        parse the parameters from onnx graph
         Args:
-            graph: a given onnx graph
-        Args:
-            init_inputs: a list of inputs, which used to init the operators
-        Args:
-            device: the used device
+            graph (Graph): a given onnx graph
+            device (string): # CPU or GPU
         Returns:
-            a dict of tensors
+            a dict of numpy ndarray
         """
-        tensor_map = {}
-        # due to https://github.com/onnx/onnx/issues/2417
-        # sometimes, input contains all initializer's info
-        # sometimes, may not
-        all_inputs = OrderedDict()
-        for t in graph.input:
-            all_inputs[t.name] = t
-        # so we refresh the input by the initializer
-        for t in graph.initializer:
-            all_inputs[t.name] = t
+        params = {}
         initializers = {t.name for t in graph.initializer}
-        inp_idx = 0
-        for name, x in all_inputs.items():
-            if name in initializers:
-                # if it has initializer, we use its value as the input
-                np_tensor = numpy_helper.to_array(x)
-                if np_tensor.dtype == "int64":
-                    np_tensor = np_tensor.astype(np.int32)
-                # todo, we cannot support scalar tensor
-                if np.ndim(np_tensor) == 0:
-                    np_tensor = np.array(np_tensor, ndmin=1)
-            else:
-                # if not, means it's a input rather than a inner weight
-                # so if the user gives values, we use these values
-                # if not, we just use the shape of input gived by onnx to init a random value
-                # HOWEVER, the random value may not be correct for some inputs, such as gather which needs indices
-                # so if have these operators, the user must give inputs
-                x_shape = tuple(
-                    dim.dim_value for dim in x.type.tensor_type.shape.dim)
-                if init_inputs is not None:
-                    np_tensor = init_inputs[inp_idx]
-                    inp_idx += 1
-                else:
-                    np_tensor = np.random.randn(*x_shape).astype(np.float32)
-            tmp_tensor = tensor.from_numpy(np_tensor)
-            tmp_tensor.to_device(device)
-            # todo, for backward
-            tmp_tensor.stores_grad = (name in initializers)
-            tensor_map[x.name] = tmp_tensor
-        return tensor_map
+        for tp in graph.initializer:
+            params[tp.name] = numpy_helper.to_array(tp)
+        return params
 
     @classmethod
-    def _onnx_model_to_singa_net(cls, model, init_inputs, device,
-                                 opset_version):
+    def _parse_graph_inputs(cls, params, graph, device):
+        inputs = {}
+        for t in graph.input:
+            if t.name not in params:
+                inputs[t.name] = t
+        return inputs
+
+    @classmethod
+    def _onnx_model_to_singa_ops(cls, model, device, opset_version):
         """
         get all intermediate tensors and operators from onnx model
         Args:
-            model: a given onnx model
-        Args:
-            init_inputs: a list of inputs, which used to init the operators
-        Args:
-            device: the used device
-        Args:
-            opset_version: the opset version
+            model (ModelProto): the loaded ONNX model
+            device (string): # CPU or GPU
+            opset_version (int): the opset version
         Returns:
             a dict of tensors
-        Returns:
-            a list of SingaOps('name', 'op', 'forward')
+            a list of SingaOps('name', 'node', 'forward')
         """
-        # init all tensor input and weight as a tensor map
-        tensor_map = cls._init_graph_parameter(model.graph, init_inputs, device)
-        # only weights tensor
-        weights = {x.name: tensor_map[x.name] for x in model.graph.initializer}
+        # init all tensor input and params as a tensor map
+        params = cls._parse_graph_params(model.graph, device)
+        inputs = cls._parse_graph_inputs(params, model.graph, device)
         # the parsed operators queue
-        singa_ops = []
-        singa_op = namedtuple('SingaOps', ['name', 'op', 'forward'])
+        layers = []
+        operator_tuple = namedtuple('operator_tuple', ['node', 'operator'])
         for node in model.graph.node:
             node = OnnxNode(node)
-            # only give the inputs it needs
-            # consumed_inputs are the inputs marked as attributes
-            # so we remove it here
-            inputs = [
-                tensor_map[x]
-                for x in node.inputs
-                if x not in node.consumed_inputs
-            ]
-            forward = cls._onnx_node_to_singa_op(node, inputs, opset_version)
-            # if it is Constant, we hanlde it as a weight
-            # otherwise, we run it and add its output into map for being used by later operators
+            op = cls._onnx_node_to_singa_op(node, inputs, opset_version)
+            # if it is Constant, we hanlde it as a params
+            # otherwise, we regard it as layer
             if node.op_type == 'Constant':
-                tmp_tensor = tensor.from_numpy(forward)
-                tmp_tensor.to_device(device)
-                tmp_name = node.outputs.pop(0)
-                weights[tmp_name] = tmp_tensor
-                tensor_map[tmp_name] = tmp_tensor
+                param_name = node.outputs.pop(0)
+                params[param_name] = tensor.from_numpy(op)
             else:
-                outputs = cls._run_node(node, inputs, forward)
-                for key, val in outputs.items():
-                    tensor_map[key] = val
-                singa_ops.extend([singa_op(node.name, node, forward)])
-        return weights, singa_ops
-    @classmethod
-    def update_batch_size(cls, onnx_model, batch_size):
-        # the inputs which are not in the initializer are the graph's inputs
-        graph = onnx_model.graph
-        initializer = set(t.name for t in graph.initializer)
-        for t in graph.input:
-            if t.name not in initializer:
-                t.type.tensor_type.shape.dim[0].dim_value = batch_size
-        for t in graph.output:
-            t.type.tensor_type.shape.dim[0].dim_value = batch_size
-        return onnx_model
+                layers.extend([operator_tuple(node, op)])
+        return params, inputs, layers
 
     @classmethod
     def prepare(cls, model, device, **kwargs):
         """
-        get operator from onnx node
+        parse the ONNX and to create layers
         Args:
-            model: a given onnx node
-        Args:
-            device: the used device
-        Returns: 
-            a list of output values
+            model (ModelProto): the loaded ONNX model
+            device (string): # CPU or GPU
+        Returns:
+            a SingaRep instance to stores the layers and weights
         """
         super(SingaBackend, cls).prepare(model, device, **kwargs)
-        # when parsing graph, we use the shape of input gived by onnx to init a random value
-        # HOWEVER, the random value may not be correct for some inputs, such as gather which needs indices
-        # so if have operators, the user must give inputs
-        init_inputs = kwargs.get("init_inputs", None)
-        # whether initializers are moved into inputs, due to https://github.com/onnx/onnx/issues/2417
-        # sometimes, input contains all initializer's info, sometimes, may not
-        cls.keep_initializers_as_inputs = kwargs.get(
-            'keep_initializers_as_inputs', True)
-        # optimize and infer the shape of the model
-        batchsize = kwargs.get("batchsize", None)
-        if batchsize is not None:
-            model = cls.update_batch_size(model, batchsize)
         # optimize and infer the shape of the model
         try:
             model = onnx.utils.polish_model(model)
         except IndexError as err:
-            # due to https://github.com/onnx/onnx/issues/2417
             model = onnx.shape_inference.infer_shapes(model)
 
         # check the opset version and ir version
+        # SINGA supports opset version(11), ir version(1.6.0 -> 6)
         opset_version = None
         for imp in model.opset_import:
             if not imp.HasField("domain") or imp.domain == "":
                 opset_version = imp.version
-                if imp.version > cls._known_opset_version:
+                if imp.version > cls._opset_version:
                     warnings.warn(
-                        "This version of singa targets ONNX operator set version {}, but the model we are trying to import uses version {}.  We will try to import it anyway, but if the model uses operators which had BC-breaking changes in the intervening versions, import will fail."
-                        .format(cls._known_opset_version, imp.version))
+                        "The imported opertor set verion {} is larger than the supported version {}."
+                        .format(imp.version, cls._opset_version))
             else:
                 warnings.warn("Unrecognized operator set {}".format(imp.domain))
-        if opset_version is None:
-            if model.ir_version >= 0x00000003:
-                raise RuntimeError(
-                    "Model with IR version >= 3 did not specify ONNX operator set version (SINGA requires it)"
-                )
-            else:
-                opset_version = 1
-        weights, singa_ops = cls._onnx_model_to_singa_net(
-            model, init_inputs, device, opset_version)
-        return SingaRep(model, weights, singa_ops,
-                        cls.keep_initializers_as_inputs)
+
+        if model.ir_version > cls._ir_version:
+            warnings.warn(
+                "The imported ir verion {} is larger than the supported version {}." 
+                .format(cls._ir_version, imp.version)
+            )
+
+        params, inputs, layers = cls._onnx_model_to_singa_ops(
+            model, device, opset_version)
+        # todo, the model may be too big, try to only store the necessary information
+        return SingaRep(model, params, inputs, layers)
 
 
 class SingaRep(BackendRep):
@@ -2141,7 +2003,7 @@ class SONNXModel(module.Module):
                 self.tm[key] = val
         return [self.tm[outp] for outp in final_outputs]
 
-    def compile(self, inputs, is_train, use_graph, graph_alg)
+    def compile(self, inputs, is_train, use_graph, graph_alg):
         # # init weights
         # super.compile(self, inputs, is_train, use_graph, graph_alg)
         # # set weights' value
@@ -2151,18 +2013,18 @@ class SONNXModel(module.Module):
         #         layer.set_weight(self.weights[input_name])   ** remember to release self.weights to free memory.
         pass
 
-def create_model(sg_ir, loss, optimizer):
-    """
-    Init a SIGNA Module
-    Args:
-        sg_ir: a SingaRep class
-        loss: loss function
-        optim: optimization
-    Returns:
-        a Module object
-    """
-    model = BaseModel(sg_ir, loss, optimizer)
-    return model
+# def create_model(sg_ir, loss, optimizer):
+#     """
+#     Init a SIGNA Module
+#     Args:
+#         sg_ir: a SingaRep class
+#         loss: loss function
+#         optim: optimization
+#     Returns:
+#         a Module object
+#     """
+#     model = BaseModel(sg_ir, loss, optimizer)
+#     return model
 
 
 run_node = SingaBackend.run_node

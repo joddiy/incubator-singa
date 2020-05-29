@@ -992,7 +992,7 @@ class OnnxNode(object):
     """
 
     def __init__(self, node):
-        self.name = str(node.name)
+        self.name = str(node.name).replace(".", "_")
         self.op_type = str(node.op_type)
         self.attrs = OnnxAttributes.from_onnx(node.attribute)
         # inputs as attributes in singa
@@ -1645,6 +1645,7 @@ class SingaBackend(Backend):
         if onnx_node.op_type in cls._special_operators:
             translator = getattr(cls, cls._special_operators[onnx_node.op_type])
             op = translator(onnx_node, op_class, opset_version)
+            op.name = onnx_node.name
         else:
             op = op_class()
         # refine the ONNXNode
@@ -1859,19 +1860,15 @@ class SingaRep(BackendRep):
         self.outputs_info = {outp.name: outp for outp in self.outputs}
         _layers = []  # layers by topo order
         for node, operator in self.layers:
+            _del_keys = []
             for key, name in node.weight_inputs.items():
                 if key not in self.states:
                     # cannot find the weights, try to find it from input
                     node.set_attr_inputs(key, name)
+                    _del_keys.append(key)
+            for key in _del_keys:
+                node.del_weight_inputs(key)
             self.__dict__[node.name] = operator
-            # init the tensor count
-            all_possible_inputs = node.inputs + list(
-                node.attr_inputs.keys()) + list(node.weight_inputs.keys())
-            for inp in all_possible_inputs:
-                if inp not in self.tensor_count:
-                    self.tensor_count[inp] = 1
-                else:
-                    self.tensor_count[inp] += 1
             _layers.append(node)
         self._layers = _layers
 
@@ -1904,7 +1901,7 @@ class SingaRep(BackendRep):
             if not self.is_graph:
                 val = val.astype(onnx_type_to_singa_type(key.dtype))
                 # todo, scalar
-                val = np.atleast_1d(self.states[val])
+                val = np.atleast_1d(val)
                 val = tensor.from_numpy(val)
                 val.to_device(self.dev)
             tensor_dict[key.name] = val
@@ -1977,7 +1974,6 @@ class SingaRep(BackendRep):
             self.initialize()
             if isinstance(x[0], tensor.Tensor):
                 self.dev = x[0].device
-            self.has_initialized = True
 
         outputs_dict = OrderedDict([(outp.name, None) for outp in self.outputs])
 
@@ -1991,7 +1987,7 @@ class SingaRep(BackendRep):
         for outp in aux_output:
             outputs_dict[outp] = None
 
-        tensor_dict = self.to_input_tensor(x)
+        tensor_dict = self.to_input_tensor(*x)
         self.init_tensor_count()
 
         # run the layer by the topo order
@@ -2011,7 +2007,9 @@ class SingaRep(BackendRep):
                         val.to_device(self.dev)
                         inputs.append(val)
                     else:
-                        raise KeyError("Not found the input {} for operation {}".format(inp, node.name))
+                        raise KeyError(
+                            "Not found the input {} for operation {}".format(
+                                inp, node.name))
             states = {}
             if callable(getattr(op, "initialize",
                                 None)) and not op._initialized:
@@ -2033,11 +2031,23 @@ class SingaRep(BackendRep):
                 elif key in self.states:
                     states[name] = self.states[key]
             # set states
-            if callable(getattr(op, "set_states", None)):
-                op.set_states(**states)
-            else:
-                for key, value in states.items():
-                    setattr(op, key, value)
+            if states:
+                if callable(getattr(op, "set_states", None)):
+                    # rename the layer's states
+                    states = {
+                        getattr(op, key).name: val
+                        for (key, val) in states.items()
+                    }
+                    if self.is_graph and not self.has_initialized:
+                        prev_state = self.dev.graph_enabled()
+                        self.dev.EnableGraph(False)
+                        op.set_states(states)
+                        self.dev.EnableGraph(prev_state)
+                    else:
+                        op.set_states(states)
+                else:
+                    for key, value in states.items():
+                        setattr(op, key, value)
             # run the node
             outputs = _run_node(op, inputs)
             # release the input tensor
@@ -2053,6 +2063,7 @@ class SingaRep(BackendRep):
                 tensor_dict[outp] = val
                 if outp in outputs_dict:
                     outputs_dict[outp] = self.to_output_tensor(val, outp)
+        self.has_initialized = True
         return list(outputs_dict.values())
 
 

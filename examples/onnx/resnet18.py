@@ -22,10 +22,9 @@ from PIL import Image
 
 from singa import device
 from singa import tensor
-from singa import autograd
 from singa import sonnx
 import onnx
-from utils import download_model, update_batch_size, check_exist_or_download
+from utils import download_model, check_exist_or_download
 
 import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
@@ -70,6 +69,19 @@ class Infer:
         return sg_ir.run([x])[0]
 
 
+class MyModel(sonnx.SONNXModel):
+
+    def __init__(self, onnx_model):
+        super(MyModel, self).__init__(onnx_model)
+
+    def forward(self, *x):
+        y = super(MyModel, self).forward(*x)
+        return y
+
+    def train_one_batch(self, x, y):
+        pass
+
+
 if __name__ == "__main__":
 
     url = 'https://s3.amazonaws.com/onnx-model-zoo/resnet/resnet18v1/resnet18v1.tar.gz'
@@ -80,32 +92,30 @@ if __name__ == "__main__":
     download_model(url)
     onnx_model = onnx.load(model_path)
 
-    # set batch size
-    onnx_model = update_batch_size(onnx_model, 1)
+    # inference
+    logging.info("preprocessing...")
+    img, labels = get_image_labe()
+    img = preprocess(img)
+    # sg_ir = sonnx.prepare(onnx_model) # run without graph
+    # y = sg_ir.run([img])
 
-    # prepare the model
-    logging.info("prepare model...")
+    logging.info("model compling...")
     dev = device.create_cuda_gpu()
-    sg_ir = sonnx.prepare(onnx_model, device=dev)
-    autograd.training = False
-    model = Infer(sg_ir)
+    x = tensor.PlaceHolder(img.shape, device=dev)
+    m = MyModel(onnx_model)
+    m.compile([x], is_train=False, use_graph=True, sequential=True)
 
     # verifty the test
     # from utils import load_dataset
     # inputs, ref_outputs = load_dataset(os.path.join('/tmp', 'resnet18v1', 'test_data_set_0'))
     # x_batch = tensor.Tensor(device=dev, data=inputs[0])
-    # outputs = model.forward(x_batch)
+    # outputs = sg_ir.run([x_batch])
     # for ref_o, o in zip(ref_outputs, outputs):
     #     np.testing.assert_almost_equal(ref_o, tensor.to_numpy(o), 4)
 
-    # inference
-    logging.info("preprocessing...")
-    img, labels = get_image_labe()
-    img = preprocess(img)
-
     logging.info("model running...")
-    x_batch = tensor.Tensor(device=dev, data=img)
-    y = model.forward(x_batch)
+    x = tensor.Tensor(device=dev, data=img)
+    y = m.forward(*[x])[0]
 
     logging.info("postprocessing...")
     y = tensor.softmax(y)

@@ -60,7 +60,7 @@ class MyModel(sonnx.SONNXModel):
 
     def forward(self, *x):
         y = super(MyModel, self).forward(*x)
-        return y
+        return y[0]
 
     def train_one_batch(self, x, y):
         pass
@@ -87,8 +87,8 @@ if __name__ == "__main__":
     logging.info("model compling...")
     dev = device.create_cuda_gpu()
     x = tensor.Tensor(device=dev, data=np.concatenate((img1, img2), axis=0))
-    m = MyModel(onnx_model)
-    m.compile([x], is_train=False, use_graph=True, sequential=True)
+    model = MyModel(onnx_model)
+    model.compile([x], is_train=False, use_graph=True, sequential=True)
 
     # verifty the test
     # from utils import load_dataset
@@ -99,7 +99,7 @@ if __name__ == "__main__":
     #     np.testing.assert_almost_equal(ref_o, tensor.to_numpy(o), 4)
 
     logging.info("model running...")
-    y = m.forward(*[x])[0]
+    y = model.forward(x)
 
     logging.info("postprocessing...")
     embedding = tensor.to_numpy(y)

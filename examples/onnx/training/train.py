@@ -24,6 +24,7 @@ from singa import opt
 from singa import device
 from singa import tensor
 from singa import sonnx
+from singa import layer
 from singa import autograd
 import numpy as np
 import time
@@ -110,13 +111,15 @@ class MyModel(sonnx.SONNXModel):
         self.dimension = 4
         self.num_channels = num_channels
         self.num_classes = num_classes
+        self.linear = layer.Linear(512, num_classes)
 
     def forward(self, *x):
-        y = super(MyModel, self).forward(*x)
+        y = super(MyModel, self).forward(*x, aux_output=['flatten_170'])[1]
+        y = self.linear(y)
         return y
 
     def train_one_batch(self, x, y, dist_option, spars):
-        out = self.forward(x)[0]
+        out = self.forward(x)
         loss = autograd.softmax_cross_entropy(out, y)
         if dist_option == 'fp32':
             self.optimizer.backward_and_update(loss)
@@ -266,7 +269,7 @@ def run(global_rank,
             y = val_y[b * batch_size:(b + 1) * batch_size]
             tx.copy_from_numpy(x)
             ty.copy_from_numpy(y)
-            out_test = model(tx)[0]
+            out_test = model(tx)
             test_correct += accuracy(tensor.to_numpy(out_test), y)
 
         if DIST:
@@ -299,7 +302,7 @@ if __name__ == '__main__':
     parser.add_argument('--model',
                         choices=list(model_config.keys()),
                         help='please refer to the models.json for more details',
-                        default='mobilenet')
+                        default='resnet18v1')
     parser.add_argument('--data',
                         choices=['cifar10', 'cifar100'],
                         default='cifar10')

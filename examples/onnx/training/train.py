@@ -290,7 +290,7 @@ def loss(out, y):
 if __name__ == '__main__':
 
     with open(os.path.join(os.path.dirname(__file__),
-                           'models.json')) as json_file:
+                           'model.json')) as json_file:
         model_config = json.load(json_file)
 
     # use argparse to get command config: max_epoch, model, data, etc. for single gpu training

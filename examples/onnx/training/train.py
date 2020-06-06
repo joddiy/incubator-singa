@@ -114,6 +114,7 @@ class MyModel(sonnx.SONNXModel):
         self.linear = layer.Linear(512, num_classes)
 
     def forward(self, *x):
+        # if you change to other models, please update the output name here
         y = super(MyModel, self).forward(*x, aux_output=['flatten_170'])[1]
         y = self.linear(y)
         return y

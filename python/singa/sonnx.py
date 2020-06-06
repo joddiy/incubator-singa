@@ -1962,7 +1962,7 @@ class SingaRep(BackendRep):
                 shape = self.get_s(node.inputs[2], node, tensor_dict).shape
                 op.bias_shape = shape
 
-    def run(self, *x, **kwargs):
+    def run(self, x, **kwargs):
         """
         run the forward of singa model
         Args:
@@ -1987,7 +1987,7 @@ class SingaRep(BackendRep):
         for outp in aux_output:
             outputs_dict[outp] = None
 
-        tensor_dict = self.to_input_tensor(*x)
+        tensor_dict = self.to_input_tensor(x)
         self.init_tensor_count()
 
         # run the layer by the topo order
@@ -2090,7 +2090,7 @@ class SONNXModel(model.Model):
         Returns:
             a OrderedDict of Tensor
         """
-        return self.sg_ir.run(*input, aux_output=aux_output)
+        return self.sg_ir.run(input, aux_output=aux_output)
 
 
 run_node = SingaBackend.run_node

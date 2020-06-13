@@ -940,6 +940,7 @@ class SingaFrontend(object):
             y_dtype = TensorProto.FLOAT
         Y = [helper.make_tensor_value_info(y.name, y_dtype, y.shape)]
 
+        print(ws)
         # prepare the weight
         W = []
         for op_name, op_t in ws.items():
@@ -1975,12 +1976,14 @@ class SingaRep(BackendRep):
             if isinstance(x[0], tensor.Tensor):
                 self.dev = x[0].device
 
-        outputs_dict = OrderedDict([(outp.name, None) for outp in self.outputs])
-
+        outputs_dict = OrderedDict([])
         # last_layers means we run this model until the last #N layers
         last_layers = kwargs.get('last_layers', len(self._layers))
         if last_layers != len(self._layers):
             for outp in self._layers[last_layers - 1].outputs:
+                outputs_dict[outp] = None
+        else:
+            for outp in self.outputs:
                 outputs_dict[outp] = None
 
         aux_output = kwargs.get('aux_output', ())
@@ -2041,6 +2044,7 @@ class SingaRep(BackendRep):
                     if self.is_graph and not self.has_initialized:
                         prev_state = self.dev.graph_enabled()
                         self.dev.EnableGraph(False)
+                        print(states)
                         op.set_states(states)
                         self.dev.EnableGraph(prev_state)
                     else:

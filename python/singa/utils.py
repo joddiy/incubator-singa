@@ -125,33 +125,6 @@ def same_pad_shape_check(handle, pad_mode, x):
     return _padding_correct
 
 
-def re_new_handle(handle, x, is_pool=False):
-    """
-    re-new a handle by useing the new input tensor
-    Args:
-        handle, the handle
-        x, input tensor
-    Returns: 
-        handle, a new handle
-    """
-    kernel_size = [handle.kernel_h, handle.kernel_w]
-    stride = [handle.stride_h, handle.stride_w]
-    padding = [handle.pad_h, handle.pad_w]
-    if is_pool:
-        params = (x, kernel_size, stride, padding, handle.is_max_pooling)
-    else:
-        params = (x, kernel_size, stride, padding, handle.channels,
-                  handle.num_filters, handle.bias_term, handle.group)
-    if (type(handle) == singa.ConvHandle or
-            type(handle) == singa.PoolingHandle):
-        handle = singa.PoolingHandle(*params) if is_pool else singa.ConvHandle(
-            *params)
-    else:
-        handle = singa.CudnnPoolingHandle(
-            *params) if is_pool else singa.CudnnConvHandle(*params)
-    return handle
-
-
 def get_padding_shape(pad_mode, input_spatial_shape, kernel_spatial_shape,
                       strides_spatial):
     """
@@ -247,6 +220,7 @@ def post_order_recursive(root, root_t):
 
             if type(root).__name__ == 'Dummy':
                 if root_t != None:
+                    print(root.name, root)
                     # constant within a node: weight
                     weights[root.name] = root_t
                 else:

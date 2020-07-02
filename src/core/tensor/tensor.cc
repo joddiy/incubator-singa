@@ -968,6 +968,7 @@ GenBinaryTensorFn(operator<, LT);
 GenBinaryTensorFn(operator<=, LE);
 GenBinaryTensorFn(operator>, GT);
 GenBinaryTensorFn(operator>=, GE);
+GenBinaryTensorFn(operator==, EQ);
 GenBinaryTensorFn(ReLUBackward, ReLUBackward);
 
 #define EltwiseTensorScalarFn(fn, t, x, ret)                            \
@@ -1007,6 +1008,8 @@ GenTensorScalarFn(operator<, LT);
 GenTensorScalarFn(operator<=, LE);
 GenTensorScalarFn(operator>, GT);
 GenTensorScalarFn(operator>=, GE);
+GenTensorScalarFn(operator==, EQ);
+
 template <typename SType>
 Tensor Div(const SType alpha, const Tensor &in) {
   Tensor out(in.shape(), in.device(), in.data_type());
@@ -1616,6 +1619,20 @@ void SoftmaxCrossEntropyBwd(const Tensor &t, Tensor *p) {
         },
         {p->block(), t.block()}, {p->block()}, "SoftmaxCrossEntropyBackward");
   });
+}
+
+Tensor &Tensor::Contiguous() {
+  if (transpose()) {
+    Tensor t(shape_, device_, data_type_);
+    singa::Transform(*this, &t);
+    std::swap(t.block_, block_);
+  }
+  return *this;
+}
+
+Tensor Contiguous(const Tensor &in) {
+  Tensor out(in);
+  return out.Contiguous();
 }
 
 // if tensor is not transposed yet, we change the shape and generate new stride

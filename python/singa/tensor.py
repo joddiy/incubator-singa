@@ -224,6 +224,11 @@ class Tensor(object):
         '''
         return self.data.MemSize()
 
+    def contiguous(self):
+        t = Tensor(self.shape, self.device, self.dtype)
+        t.data = singa.Contiguous(self.data)
+        return t
+
     def reshape(self, shape):
         '''Return a new tensor with the given shape, and the original
             tensor is not changed.
@@ -697,6 +702,12 @@ class Tensor(object):
         else:
             return _call_singa_func(singa.GEFloat, self.data, rhs)
 
+    def __eq__(self, rhs):
+        if isinstance(rhs, Tensor):
+            return from_raw_tensor(singa.__eq__(self.data, rhs.data))
+        else:
+            return _call_singa_func(singa.EQFloat, self.data, rhs)
+
     def __radd__(self, lhs):
         lhs = float(lhs)
         one = Tensor(self.shape, self.device, self.dtype)
@@ -782,6 +793,10 @@ def sizeof(dtype):
         the number of bytes of the given SINGA data type defined in core.proto
     '''
     return singa.SizeOf(dtype)
+
+
+def contiguous(tensor):
+    return _call_singa_func(singa.Contiguous, tensor.data)
 
 
 def reshape(tensor, shape):
@@ -1160,6 +1175,20 @@ def ge(t, x):
         or t[i] >= x[i] ? 1.0f:0.0f
     '''
     return t >= x
+
+
+def eq(t, x):
+    '''Elementi-wise comparison for t == x.
+
+    Args:
+        t (Tensor): left hand side operand
+        x (Tensor or float): right hand side operand
+
+    Returns:
+        a Tensor with each element being t[i] == x ? 1.0f:0.0f,
+        or t[i] == x[i] ? 1.0f:0.0f
+    '''
+    return t == x
 
 
 def add(lhs, rhs, ret=None):

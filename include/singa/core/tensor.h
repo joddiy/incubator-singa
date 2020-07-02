@@ -230,6 +230,9 @@ class Tensor {
   template <typename SType>
   Tensor &operator/=(const SType x);
 
+  /// if tensor is transposed, transform to contiguous memory
+  Tensor &Contiguous();
+
   /// change the shape (and stride); the block may be reallocated.
   Tensor &Reshape(const Shape &shape);
 
@@ -319,6 +322,8 @@ Tensor Boradcast(const Shape &shape);
 /// match
 /// which shares the memory with in if possible
 Tensor Reshape(const Tensor &in, const Shape &s);
+
+Tensor Contiguous(const Tensor &in);
 
 Tensor Resize(const Tensor &in, const Shape &s);
 
@@ -452,6 +457,16 @@ void GE(const Tensor &in, const SType x, Tensor *out);
 /// Element-wise operation, out[i]= (in1[i] >= in2[i]) ? 1.f : 0.f
 Tensor operator>=(const Tensor &in1, const Tensor &in2);
 void GE(const Tensor &in1, const Tensor &in2, Tensor *out);
+
+/// Element-wise operation, out[i]= (in[i] == x) ? 1.f : 0.f
+template <typename SType>
+Tensor operator==(const Tensor &in, const SType x);
+template <typename SType>
+void EQ(const Tensor &in, const SType x, Tensor *out);
+
+/// Element-wise operation, out[i]= (in1[i] == in2[i]) ? 1.f : 0.f
+Tensor operator==(const Tensor &in1, const Tensor &in2);
+void EQ(const Tensor &in1, const Tensor &in2, Tensor *out);
 
 Tensor operator+(const Tensor &lhs, const Tensor &rhs);
 void Add(const Tensor &lhs, const Tensor &rhs, Tensor *out);

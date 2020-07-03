@@ -58,8 +58,10 @@ the input
 */
 vector<int> generate_shape_cuda(const Tensor& x) {
   Shape shape = x.shape();
-  CHECK_LE(shape.size(), 5)
-      << "Dimensions (shape) beyond 5 are currently not supported";
+  // maximum dimension allowed defined in cudnn.h, variable CUDNN_DIM_MAX
+  // TODO: check other side effects
+  CHECK_LE(shape.size(), 7)
+      << "Dimensions (shape) beyond 6 are currently not supported";
   vector<int> shape_arr;
   if (shape.size() < 4) {
     for (int n = 0; n < 4 - int(shape.size()); ++n) {
@@ -73,8 +75,9 @@ vector<int> generate_shape_cuda(const Tensor& x) {
 }
 
 int generate_dim_cuda(const Tensor& x) {
-  CHECK_LE(x.nDim(), 5)
-      << "Dimensions (shape) beyond 5 are currently not supported";
+  // maximum dimension allowed defined in cudnn.h, variable CUDNN_DIM_MAX
+  CHECK_LE(x.nDim(), 7)
+      << "Dimensions (shape) beyond 6 are currently not supported";
   if (x.shape().size() <= 4) {
     return 4;
   } else {

@@ -204,6 +204,17 @@ class TestTensorMethods(unittest.TestCase):
         np.testing.assert_array_almost_equal(TA1, A1)
         np.testing.assert_array_almost_equal(TA2, A2)
 
+    @unittest.skipIf(not singa_api.USE_CUDA, 'CUDA is not enabled')
+    def test_gpu_6d_transpose(self,dev=gpu_dev):
+        a = np.random.random((2,2,2,2,2,2))
+        ta = tensor.from_numpy(a)
+        ta.to_device(dev)
+
+        tb = tensor.transpose(ta, [5,4,3,2,1,0])
+        b = np.transpose(a, (5,4,3,2,1,0))
+
+        np.testing.assert_array_almost_equal(tensor.to_numpy(tb), b)
+
     def test_einsum(self):
 
         a = np.array(
